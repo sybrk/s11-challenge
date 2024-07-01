@@ -21,7 +21,7 @@ module.exports = {
       ],
       presets: [
         [PRESET_REACT],
-        [PRESET_ENV, { targets: { chrome: '96' } }]
+        [PRESET_ENV, {modules: 'commonjs', targets: { chrome: '96' } }]
       ]
     },
     production: {

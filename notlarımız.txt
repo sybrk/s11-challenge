@@ -1,0 +1,9 @@
+* API fonksiyonları axios ile yazıyoruz
+axios documentation: https://axios-http.com/docs/post_example
+* Login component'i çalıştırıyoruz
+* Article'ları getiriyoruz ve sonra tekrar bir araya geliyoruz.
+
+sonrasında kontrol edeceklerimiz
+
+* login olan kullanıcı login düğmesini görmesin
+* login olunmadığında article'lar görünmesin

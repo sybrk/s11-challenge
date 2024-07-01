@@ -5,6 +5,7 @@ import LoginForm from './LoginForm'
 import Message from './Message'
 import ArticleForm from './ArticleForm'
 import Spinner from './Spinner'
+import { work } from '../businesssLayer/loginBusiness'
 
 const articlesUrl = 'http://localhost:9000/api/articles'
 const loginUrl = 'http://localhost:9000/api/login'
@@ -29,6 +30,7 @@ export default function App() {
   }
 
   const login = ({ username, password }) => {
+
     // ✨ ekleyin
     // State'deki mesajı yok edin, spinner'ı açın
     // uygun uç noktasına istek gönderin.
@@ -84,7 +86,7 @@ export default function App() {
             </>
           } />
         </Routes>
-        <footer>Tech mi Çift mi @2023</footer>
+        <footer>WorkingÇift @2024</footer>
       </div>
     </>
   )
