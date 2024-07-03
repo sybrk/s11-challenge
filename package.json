@@ -5,8 +5,11 @@
     "scripts": {
         "dev": "fkill :9000 :3000 -s && concurrently \"npm:backend\" \"npm:frontend\"",
         "test-all": "cross-env NODE_ENV=testing jest --watch",
-        "test-api-calls": "NODE_ENV=testing jest test/api_calls.test.js",
-        "test-api-article": "NODE_ENV=testing jest test/apiGetArticles.test.js",
+        "test-api-login": "NODE_ENV=testing jest test/apiLogin.test.js",
+        "test-api-get-article": "NODE_ENV=testing jest test/apiGetArticles.test.js",
+        "test-api-post-article": "NODE_ENV=testing jest test/apiPostArticle.test.js",
+        "test-api-put-article": "NODE_ENV=testing jest test/apiPutArticle.test.js",
+        "test-api-delete-article": "NODE_ENV=testing jest test/apiDeleteArticle.test.js",
         "webpack": "cross-env NODE_ENV=production webpack",
         "heroku-postbuild": "npm run webpack",
         "frontend": "webpack serve --open",
