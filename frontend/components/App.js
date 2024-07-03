@@ -21,19 +21,24 @@ export default function App() {
   // ✨ `useNavigate` 'i araştırın React Router v.6
   const navigate = useNavigate()
 
-  useEffect(()=> {
-    if(loginBusiness.checkLogin()) {
-      navigate("/");
+  useEffect(() => {
+    if (loginBusiness.checkLogin()) {
+      navigate("/articles");
     } else {
-      navigate("/articles")
+      navigate("/")
     }
-  },[])
-  
+  }, [])
+
   const logout = () => {
     // ✨ ekleyin
     // Eğer token local storage da kayıtlıysa silinmelidir,
     // ve state'ine "Güle güle!" mesajı eklenmelidir.
     // Herhangi bir case'de, tarayıcıyı login ekranına yönlendirin
+    const isLoggedOut = loginBusiness.logout();
+    if (isLoggedOut) {
+      setMessage("Güle güle!");
+      navigate("/");
+    }
   }
 
   const login = async ({ username, password }) => {
@@ -64,19 +69,25 @@ export default function App() {
     // Eğer bir şeyler yanlış giderse, response'un durumunu inceleyin:
     // eğer 401'se token da bir sıkıntı olabilir ve tekrar login sayfasına yönlendirmeliyiz
     // Spinner'ı kapatmayı unutmayın!
-    setMessage("");
-    setSpinnerOn(true)
-    let articleRequest = await articleBusiness.getArticles();
-    setSpinnerOn(false);
-    if (articleRequest.status == 200) {
-      setMessage(articleRequest.data.message);
-      setArticles(articleRequest.data.articles);
-    } else {
-      setMessage(articleRequest.data.message)
-      if(articleRequest.status.toString().startsWith("4")) {
-        navigate("/")
+    if (loginBusiness.checkLogin()) {
+      setMessage("");
+      setSpinnerOn(true)
+      let articleRequest = await articleBusiness.getArticles();
+      setSpinnerOn(false);
+      if (articleRequest.status == 200) {
+        setMessage(articleRequest.data.message);
+        setArticles(articleRequest.data.articles);
+      } else {
+        setMessage(articleRequest.data.message)
+        if (articleRequest.status.toString().startsWith("4")) {
+          navigate("/")
+        }
       }
+    } else {
+      setMessage("Oturum açmanız gerekir")
+      navigate("/")
     }
+
 
   }
 
@@ -98,9 +109,10 @@ export default function App() {
   return (
     // ✨ JSX'i düzenleyin: `Spinner`, `Message`, `LoginForm`, `ArticleForm` ve `Articles` gerekli proplarla beraber ❗
     <>
-      <Spinner on = {spinnerOn} />
-      <Message message= {message}/>
-      <button id="logout" onClick={logout}>Oturumu kapat</button>
+      <Spinner on={spinnerOn} />
+      <Message message={message} />
+      {loginBusiness.checkLogin() ? <><button id="logout" onClick={logout}>Oturumu kapat</button> </> : ""}
+      
       <div id="wrapper" style={{ opacity: spinnerOn ? "0.25" : "1" }}> {/* <-- bu satırı değiştirmeyin */}
         <h1>İleri Seviye Web Uygulaması</h1>
         <nav>
@@ -108,10 +120,10 @@ export default function App() {
           <NavLink id="articlesScreen" to="/articles">Makaleler</NavLink>
         </nav>
         <Routes>
-          <Route path="/" element={<LoginForm login = {login} />} />
+          <Route path="/" element={<LoginForm login={login} />} />
           <Route path="articles" element={
             <>
-              <ArticleForm postArticle={postArticle} updateArticle={updateArticle} setCurrentArticleId={setCurrentArticleId}/>
+              <ArticleForm postArticle={postArticle} updateArticle={updateArticle} setCurrentArticleId={setCurrentArticleId} />
               <Articles getArticles={getArticles} articles={articles} deleteArticle={deleteArticle} setCurrentArticleId={setCurrentArticleId} />
             </>
           } />
