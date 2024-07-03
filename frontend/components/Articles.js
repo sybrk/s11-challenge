@@ -1,16 +1,21 @@
 import React, { useEffect } from 'react'
-import { Navigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import PT from 'prop-types'
+import { loginBusiness } from '../businesssLayer/loginBusiness'
 
 export default function Articles(props) {
   // ✨ proplarım nerede? burada...
-
+  const {getArticles, articles} = props
   // ✨ koşullu mantık uygula: eğer token yoksa
   // login ekranını render edeceğiz (React Router v.6)
+  if(loginBusiness.checkLogin()){
+    useNavigate("/login")
+  }
 
   useEffect(() => {
     // ✨ yalnızca ilk render anında makaleleri buradan alın
-  })
+    getArticles()
+  },[])
 
   return (
     // ✨ JSX i düzenleyi: `Function.prototype`'ı gerçek fonksiyonlarla güncelleyin
@@ -18,9 +23,9 @@ export default function Articles(props) {
     <div className="articles">
       <h2>Makaleler</h2>
       {
-        ![].length
+        !articles.length
           ? 'Hiç makale yok'
-          : [].map(art => {
+          : articles.map(art => {
             return (
               <div className="article" key={art.article_id}>
                 <div>

@@ -31,10 +31,10 @@ export const apiCalls = {
         const headers = {"Authorization": token}
         try {
             const response = await axios.get(`${apiUrl}/articles`, {headers});
-            return response.data;
+            return response;
         } catch (error) {
             console.error(error);
-            return error.response.data;
+            return error.response;
         }
     },
     postArticleRequest: async (token, title, text, topic) => {
