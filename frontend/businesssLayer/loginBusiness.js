@@ -14,12 +14,11 @@ export const loginBusiness = {
     },
     checkLogin: ()=> {
         const token = localStorageUtil.getFromStorage(LOCAL_STORAGE_TOKEN_KEY);
-        console.log(token)
         if (token) {
-            console.log("found token")
+            
             return true
         } else {
-            console.log("no token")
+           
             return false;
         }
         

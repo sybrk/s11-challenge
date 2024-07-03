@@ -112,12 +112,15 @@ export default function App() {
       <Spinner on={spinnerOn} />
       <Message message={message} />
       {loginBusiness.checkLogin() ? <><button id="logout" onClick={logout}>Oturumu kapat</button> </> : ""}
-      
+
       <div id="wrapper" style={{ opacity: spinnerOn ? "0.25" : "1" }}> {/* <-- bu satırı değiştirmeyin */}
         <h1>İleri Seviye Web Uygulaması</h1>
         <nav>
-          <NavLink id="loginScreen" to="/">Oturum aç</NavLink>
-          <NavLink id="articlesScreen" to="/articles">Makaleler</NavLink>
+          {loginBusiness.checkLogin()
+          ? <NavLink id="articlesScreen" to="/articles">Makaleler</NavLink>
+          : <NavLink id="loginScreen" to="/">Oturum aç</NavLink>}
+
+          
         </nav>
         <Routes>
           <Route path="/" element={<LoginForm login={login} />} />
