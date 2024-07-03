@@ -5,7 +5,7 @@ import { loginBusiness } from '../businesssLayer/loginBusiness'
 
 export default function Articles(props) {
   // ✨ proplarım nerede? burada...
-  const {getArticles, articles} = props
+  const {getArticles, articles, deleteArticle, setCurrentArticleId} = props
   // ✨ koşullu mantık uygula: eğer token yoksa
   // login ekranını render edeceğiz (React Router v.6)
   if(loginBusiness.checkLogin()){
@@ -17,6 +17,14 @@ export default function Articles(props) {
     getArticles()
   },[])
 
+  const editButtonHandler = (evt)=> {
+    const articleId = evt.target.getAttribute("articleid")
+    setCurrentArticleId(articleId)
+  }
+  const deleteButtonHandler = (evt)=> {
+    const articleId = evt.target.getAttribute("articleid")
+    deleteArticle(articleId)
+  }
   return (
     // ✨ JSX i düzenleyi: `Function.prototype`'ı gerçek fonksiyonlarla güncelleyin
     // ve makale üretmek için articles propunu kullanın
@@ -34,8 +42,8 @@ export default function Articles(props) {
                   <p>Başlık: {art.topic}</p>
                 </div>
                 <div>
-                  <button disabled={true} onClick={Function.prototype}>Düzenle</button>
-                  <button disabled={true} onClick={Function.prototype}>Sil</button>
+                  <button articleid = {art.article_id} onClick={editButtonHandler}>Düzenle</button>
+                  <button articleid = {art.article_id} onClick={deleteButtonHandler}>Sil</button>
                 </div>
               </div>
             )

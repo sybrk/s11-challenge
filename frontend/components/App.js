@@ -8,6 +8,7 @@ import Spinner from './Spinner'
 import { loginBusiness } from '../businesssLayer/loginBusiness'
 import { articleBusiness } from '../businesssLayer/articleBusiness'
 
+
 const articlesUrl = 'http://localhost:9000/api/articles'
 const loginUrl = 'http://localhost:9000/api/login'
 
@@ -80,6 +81,7 @@ export default function App() {
       } else {
         setMessage(articleRequest.data.message)
         if (articleRequest.status.toString().startsWith("4")) {
+          loginBusiness.logout()
           navigate("/")
         }
       }
@@ -91,19 +93,55 @@ export default function App() {
 
   }
 
-  const postArticle = article => {
+  const postArticle = async (article) => {
     // ✨ ekleyin
     // Akış, "getArticles" işlevine çok benzer.
     // Ne yapacağınızı biliyorsunuz, log kullanabilirsiniz ya da breakpointler
+    setSpinnerOn(true);
+    const postRequest = await articleBusiness.postArticle(article);
+    setSpinnerOn(false)
+    if(postRequest.status == 201) {
+      
+      await getArticles()
+      
+      setMessage(postRequest.data.message)
+      
+    } else {
+      setMessage(postRequest.data.message)
+    }
+   
+    
   }
 
-  const updateArticle = ({ article_id, article }) => {
+  const updateArticle = async (article_id, article) => {
     // ✨ ekleyin
     // Bunu biliyorsunuz!
+    setSpinnerOn(true);
+    const updateArticleRequest = await articleBusiness.updateArticle(article_id, article);
+    setSpinnerOn(false);
+    if (updateArticleRequest.status == 200) {
+     
+      await getArticles()
+ 
+      setMessage(updateArticleRequest.data.message)
+    } else {
+      setMessage(updateArticleRequest.data.message)
+    }
+    
+    
   }
 
-  const deleteArticle = article_id => {
+  const deleteArticle = async (article_id) => {
     // ✨ ekleyin
+    const deleteArticleRequest = await  articleBusiness.deleteArticle(article_id);
+  
+    if(deleteArticleRequest.status == 200) {
+      await getArticles();
+      setMessage(deleteArticleRequest.data.message)
+    } else {
+      setMessage(deleteArticleRequest.data.message)
+    }
+    
   }
 
   return (
@@ -126,7 +164,7 @@ export default function App() {
           <Route path="/" element={<LoginForm login={login} />} />
           <Route path="articles" element={
             <>
-              <ArticleForm postArticle={postArticle} updateArticle={updateArticle} setCurrentArticleId={setCurrentArticleId} />
+              <ArticleForm postArticle={postArticle} updateArticle={updateArticle} setCurrentArticleId={setCurrentArticleId} currentArticle={articles.find(art => art.article_id == currentArticleId)} currentArticleId = {currentArticleId} />
               <Articles getArticles={getArticles} articles={articles} deleteArticle={deleteArticle} setCurrentArticleId={setCurrentArticleId} />
             </>
           } />
