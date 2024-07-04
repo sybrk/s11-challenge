@@ -1,7 +1,6 @@
 {
     "name": "web-sprint-challenge-advanced-web-applications",
     "version": "0.0.1",
-
     "scripts": {
         "dev": "fkill :9000 :3000 -s && concurrently \"npm:backend\" \"npm:frontend\"",
         "test-all": "cross-env NODE_ENV=testing jest --watch",
@@ -10,6 +9,8 @@
         "test-api-post-article": "NODE_ENV=testing jest test/apiPostArticle.test.js",
         "test-api-put-article": "NODE_ENV=testing jest test/apiPutArticle.test.js",
         "test-api-delete-article": "NODE_ENV=testing jest test/apiDeleteArticle.test.js",
+        "test-spinner": "NODE_ENV=testing jest test/Spinner.test.js",
+        "test-mvp": "NODE_ENV=testing jest test/codegrade_mvp.test.js",
         "webpack": "cross-env NODE_ENV=production webpack",
         "heroku-postbuild": "npm run webpack",
         "frontend": "webpack serve --open",
@@ -43,12 +44,14 @@
         "style-loader": "3.3.1",
         "webpack": "5.73.0",
         "webpack-cli": "4.10.0",
-        "webpack-dev-server": "4.9.2"
+        "webpack-dev-server": "4.9.2",
+        "headers-polyfill": "^4.0.3"
     },
     "dependencies": {
         "axios": "0.27.2",
         "cors": "2.8.5",
         "express": "4.18.1",
+        "headers-polyfill": "^4.0.3",
         "jsonwebtoken": "^9.0.0",
         "prop-types": "15.8.1",
         "react": "18.1.0",

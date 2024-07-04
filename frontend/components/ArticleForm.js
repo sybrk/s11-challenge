@@ -48,8 +48,8 @@ export default function ArticleForm(props) {
     // ✨ ekleyin
     // inputların bazı değerleri olup olmadığına dikkat edin
     
-    if ((!values.text.length >=1) ||
-        (!values.title.length >=1) ||
+    if ((!values.text.trim().length >=1) ||
+        (!values.title.trim().length >=1) ||
         !topicOptions.includes(values.topic)) {
           return true
     } else {
