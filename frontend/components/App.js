@@ -75,7 +75,7 @@ export default function App() {
         <h1>İleri Seviye Web Uygulaması</h1>
         <nav>
           <NavLink id="loginScreen" to="/">Oturum aç</NavLink>
-          <NavLink id="articlesScreen" to="/articles">Makaleler</NavLink>
+          <NavLink id="articlesScreen" to="/articles">Makaleler egoo</NavLink>
         </nav>
         <Routes>
           <Route path="/" element={<LoginForm />} />

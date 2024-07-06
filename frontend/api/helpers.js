@@ -13,17 +13,16 @@ Uygun bir isteğe verilen yanıt, "200 OK" ve boş olabilecek makalelerin bir li
 export const apiCalls = {
     loginRequest: async (username, password) => {
         //....
-
         try {
             const response = await axios.post(`${apiUrl}/login`, {
                 username,
                 password
             });
-            return response.data;
+            return response;
             
         } catch (error) {
             console.error(error);
-            return error.response.data;
+            return error.response;
         }
     },
     getArticlesRequest: async (token) => {
@@ -31,10 +30,10 @@ export const apiCalls = {
         const headers = {"Authorization": token}
         try {
             const response = await axios.get(`${apiUrl}/articles`, {headers});
-            return response.data;
+            return response;
         } catch (error) {
             console.error(error);
-            return error.response.data;
+            return error.response;
         }
     },
     postArticleRequest: async (token, title, text, topic) => {
@@ -44,10 +43,41 @@ export const apiCalls = {
         const data = {title, text, topic}
         try {
             const response = await axios.post(`${apiUrl}/articles`, data, {headers});
-            return response.data;
+            return response;
+        } catch (error) {
+            console.error(error);
+            return error.response;
+        }
+    },
+    updateArticleRequest: async (token, articleId, title, text, topic) => {
+        if (title.trim().length < 1 || text.trim().length < 1) {
+            throw new Error("Title and text must be at least 1 character long.");
+        }
+    
+        if (!["React", "JavaScript", "Node"].includes(topic)) {
+            throw new Error("Topic must be one of the following: React, JavaScript, Node.");
+        }
+    
+        const data = { title, text, topic };
+        const headers = {
+            'Authorization': token,
+            'Content-Type': 'application/json'
+        };
+        try {
+            const response = await axios.put(`${apiUrl}/articles/${articleId}`, data, { headers });
+            return response
         } catch (error) {
             console.error(error);
             return error.response.data;
         }
     },
+    deleteArticle: async (token, articleId) => {
+        const headers = {"Authorization": token}
+        try {
+            const response = await axios.delete(`${apiUrl}/articles/${articleId}`, { headers })
+            return response
+        } catch (error) {
+            
+        }
+    }
 };
