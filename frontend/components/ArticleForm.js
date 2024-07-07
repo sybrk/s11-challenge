@@ -1,40 +1,54 @@
 import React, { useEffect, useState } from 'react'
 import PT from 'prop-types'
+import { useNavigate } from 'react-router-dom'
 
 const initialFormValues = { title: '', text: '', topic: '' }
 
-export default function ArticleForm(props) {
+export default function ArticleForm({ postArticle, updateArticle, setCurrentArticleId, currentArticle, setMessage, setSpinnerOn }) {
   const [values, setValues] = useState(initialFormValues)
-  // ✨ proplarım nerede? burada... 
+
+  const navigate = useNavigate()
+  const redirectToArticles = () => { navigate('/articles') }
+
 
   useEffect(() => {
     // ✨ ekleyin
-    // `currentArticle` prop'u her değiştiğinde, doğruluğunu kontrol etmeliyiz:
-    // eğer doğruysa title, text ve konusunu ilgili formda ayarlamalıyız
-	// eğer değilse, formu başlangıç değerlerine sıfırlamalıyız
-	})
+    if (currentArticle) {
+      setValues({
+        title: currentArticle.title,
+        text: currentArticle.text,
+        topic: currentArticle.topic
+      })
+    } else {
+      setValues(initialFormValues)
+    }
+  }, [currentArticle])
 
   const onChange = evt => {
     const { id, value } = evt.target
     setValues({ ...values, [id]: value })
   }
 
-  const onSubmit = evt => {
+  const onSubmit = async (evt) => {
     evt.preventDefault()
     // ✨ ekleyin
-    // `currentArticle` prop'unun doğruluğuna göre yeni bir post göndermeliyiz ya da var olanı güncellemeliyiz,
+    if (currentArticle) {
+      updateArticle({ article_id: currentArticle.article_id, article: values })
+    } else {
+      postArticle(values); 
+    }
   }
 
   const isDisabled = () => {
     // ✨ ekleyin
-    // inputların bazı değerleri olup olmadığına dikkat edin
+    return values.title.trim().length < 1 || values.text.trim().length < 1 || !["React", "JavaScript", "Node"].includes(values.topic)
   }
 
   return (
     // ✨ JSX'i düzenleyin: başlığın "Düzenle" ya da "Oluştur" olarak görüntülenmesini sağlayın
     // ve Function.prototype'ı uygun fonksiyonla değiştirin
     <form id="form" onSubmit={onSubmit}>
-      <h2>Yeni Makale Oluştur</h2>
+      <h2>{currentArticle ? "Düzenle" : "Yeni Makale Oluştur"}</h2>
       <input
         maxLength={50}
         onChange={onChange}
@@ -56,8 +70,8 @@ export default function ArticleForm(props) {
         <option value="Node">Node</option>
       </select>
       <div className="button-group">
-        <button disabled={isDisabled()} id="submitArticle">Gönder</button>
-        <button onClick={Function.prototype}>Düzenlemeyi iptal et</button>
+        <button disabled={isDisabled()} type="submit" id="submitArticle">Gönder</button>
+        <button onClick={() => setCurrentArticleId(null)}>Düzenlemeyi iptal et</button>
       </div>
     </form>
   )

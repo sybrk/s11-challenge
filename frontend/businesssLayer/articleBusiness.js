@@ -12,7 +12,7 @@ getArticles: async(token) => {
 postArticles: async(token, title, text, topic) => {
     let requestPost = await apiCalls.postArticleRequest(token, title, text, topic);
     if (requestPost.status === 201 ) {
-        return requestPost.data.articles
+        return requestPost.data.article
     }  else {
         return false
     }

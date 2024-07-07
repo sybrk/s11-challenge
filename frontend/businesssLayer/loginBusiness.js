@@ -7,6 +7,7 @@ export const loginBusiness = {
         //todo: if requestResult ok save token into localStorage, else return false
     if (requestResult.status === 200) {
         localStorage.setItem("token", requestResult.data.token);
+        return true;
     } else {
         return false;
     }
