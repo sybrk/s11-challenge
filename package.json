@@ -1,7 +1,6 @@
 {
     "name": "web-sprint-challenge-advanced-web-applications",
     "version": "0.0.1",
-
     "scripts": {
         "dev": "fkill :9000 :3000 -s && concurrently \"npm:backend\" \"npm:frontend\"",
         "test-all": "cross-env NODE_ENV=testing jest --watch",
@@ -24,7 +23,7 @@
         "@types/jest": "28.1.1",
         "babel-loader": "8.2.5",
         "babel-plugin-styled-components": "2.0.7",
-        "concurrently": "7.2.1",
+        "concurrently": "^7.2.1",
         "cross-env": "7.0.3",
         "css-loader": "6.7.1",
         "eslint": "8.17.0",
@@ -35,17 +34,18 @@
         "jest": "28.1.1",
         "jest-environment-jsdom": "28.1.1",
         "msw": "0.42.0",
-        "nodemon": "^2.0.20",
+        "nodemon": "^3.1.4",
         "string-replace-loader": "3.1.0",
         "style-loader": "3.3.1",
-        "webpack": "5.73.0",
+        "webpack": "^5.92.1",
         "webpack-cli": "4.10.0",
         "webpack-dev-server": "4.9.2"
     },
     "dependencies": {
-        "axios": "0.27.2",
+        "axios": "^1.7.2",
+        "body-parser": "^1.20.2",
         "cors": "2.8.5",
-        "express": "4.18.1",
+        "express": "^4.19.2",
         "jsonwebtoken": "^9.0.0",
         "prop-types": "15.8.1",
         "react": "18.1.0",

@@ -1,29 +1,36 @@
 import React, { useState } from 'react'
 import PT from 'prop-types'
+import { useNavigate } from 'react-router-dom'
 
 const initialFormValues = {
   username: '',
   password: '',
 }
-export default function LoginForm(props) {
+
+export default function LoginForm({ login }) {
   const [values, setValues] = useState(initialFormValues)
-  // ✨ proplarım nerede? burada parçalayın
+  const [message, setMessage] = useState('')
+  const navigate = useNavigate()
 
   const onChange = evt => {
     const { id, value } = evt.target
     setValues({ ...values, [id]: value })
   }
 
-  const onSubmit = evt => {
+  const onSubmit = async evt => {
     evt.preventDefault()
-    // ✨ ekleyin
+    const success = await login(values) // login fonksiyonunu burada çağır
+    if (success) {
+      setMessage('Login successful.')
+      navigate('/articles') // Başarılı oturum açma sonrası yönlendirme
+    } else {
+      setMessage('Login failed.')
+    }
   }
 
   const isDisabled = () => {
-    // ✨ ekleyin
-    // Trimlenmiş username karakter sayısı >= 3, ve
-    // trimlenmiş password karakter sayısı >= 8 
-    // butonun enable durumuna geçmesi için
+    const { username, password } = values
+    return username.trim().length < 3 || password.trim().length < 8
   }
 
   return (
@@ -37,6 +44,7 @@ export default function LoginForm(props) {
         id="username"
       />
       <input
+        type="password"
         maxLength={20}
         value={values.password}
         onChange={onChange}
@@ -44,6 +52,7 @@ export default function LoginForm(props) {
         id="password"
       />
       <button disabled={isDisabled()} id="submitCredentials">Oturum aç</button>
+      {message && <p>{message}</p>}
     </form>
   )
 }

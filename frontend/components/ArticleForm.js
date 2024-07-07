@@ -6,13 +6,19 @@ const initialFormValues = { title: '', text: '', topic: '' }
 export default function ArticleForm(props) {
   const [values, setValues] = useState(initialFormValues)
   // ✨ proplarım nerede? burada... 
+  const { currentArticle, postArticle, updateArticle, setCurrentArticleId } = props
 
   useEffect(() => {
     // ✨ ekleyin
     // `currentArticle` prop'u her değiştiğinde, doğruluğunu kontrol etmeliyiz:
     // eğer doğruysa title, text ve konusunu ilgili formda ayarlamalıyız
-	// eğer değilse, formu başlangıç değerlerine sıfırlamalıyız
-	})
+    // eğer değilse, formu başlangıç değerlerine sıfırlamalıyız
+    if (currentArticle) {
+      setValues(currentArticle)
+    } else {
+      setValues(initialFormValues)
+    }
+  }, [currentArticle])
 
   const onChange = evt => {
     const { id, value } = evt.target
@@ -23,18 +29,27 @@ export default function ArticleForm(props) {
     evt.preventDefault()
     // ✨ ekleyin
     // `currentArticle` prop'unun doğruluğuna göre yeni bir post göndermeliyiz ya da var olanı güncellemeliyiz,
+    if (currentArticle) {
+      updateArticle({ article_id: currentArticle.id, article: values })
+    }
+    else {
+      postArticle(values)
+    }
+    setValues(initialFormValues)
+    setCurrentArticleId(null)
   }
 
   const isDisabled = () => {
     // ✨ ekleyin
     // inputların bazı değerleri olup olmadığına dikkat edin
+    return !values.title.trim() || values.text.trim() || values.topic
   }
 
   return (
     // ✨ JSX'i düzenleyin: başlığın "Düzenle" ya da "Oluştur" olarak görüntülenmesini sağlayın
     // ve Function.prototype'ı uygun fonksiyonla değiştirin
     <form id="form" onSubmit={onSubmit}>
-      <h2>Yeni Makale Oluştur</h2>
+      <h2> {currentArticle ? 'Makale Düzenle' : 'Yeni Makale Oluştur'}</h2>
       <input
         maxLength={50}
         onChange={onChange}
@@ -57,7 +72,10 @@ export default function ArticleForm(props) {
       </select>
       <div className="button-group">
         <button disabled={isDisabled()} id="submitArticle">Gönder</button>
-        <button onClick={Function.prototype}>Düzenlemeyi iptal et</button>
+        <button onClick={() => {
+          setValues(initialFormValues)
+          setCurrentArticleId(null)
+        }}>Düzenlemeyi iptal et</button>
       </div>
     </form>
   )

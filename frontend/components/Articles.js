@@ -2,25 +2,25 @@ import React, { useEffect } from 'react'
 import { Navigate } from 'react-router-dom'
 import PT from 'prop-types'
 
-export default function Articles(props) {
-  // ✨ proplarım nerede? burada...
+export default function Articles({ articles, getArticles, deleteArticle, setCurrentArticleId }) {
+  const token = localStorage.getItem('token')
 
-  // ✨ koşullu mantık uygula: eğer token yoksa
-  // login ekranını render edeceğiz (React Router v.6)
+  // Eğer token yoksa login sayfasına yönlendir
+  if (!token) {
+    return <Navigate to="/" />
+  }
 
   useEffect(() => {
-    // ✨ yalnızca ilk render anında makaleleri buradan alın
-  })
+    getArticles()
+  }, [getArticles])
 
   return (
-    // ✨ JSX i düzenleyi: `Function.prototype`'ı gerçek fonksiyonlarla güncelleyin
-    // ve makale üretmek için articles propunu kullanın
     <div className="articles">
       <h2>Makaleler</h2>
       {
-        ![].length
+        !articles.length
           ? 'Hiç makale yok'
-          : [].map(art => {
+          : articles.map(art => {
             return (
               <div className="article" key={art.article_id}>
                 <div>
@@ -29,8 +29,8 @@ export default function Articles(props) {
                   <p>Başlık: {art.topic}</p>
                 </div>
                 <div>
-                  <button disabled={true} onClick={Function.prototype}>Düzenle</button>
-                  <button disabled={true} onClick={Function.prototype}>Sil</button>
+                  <button onClick={() => setCurrentArticleId(art.article_id)}>Düzenle</button>
+                  <button onClick={() => deleteArticle(art.article_id)}>Sil</button>
                 </div>
               </div>
             )
