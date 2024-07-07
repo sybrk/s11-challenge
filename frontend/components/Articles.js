@@ -1,26 +1,39 @@
 import React, { useEffect } from 'react'
-import { Navigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import PT from 'prop-types'
+import { loginBusiness } from '../businesssLayer/loginBusiness'
 
 export default function Articles(props) {
   // ✨ proplarım nerede? burada...
-
+  const {getArticles, articles, deleteArticle, setCurrentArticleId} = props
   // ✨ koşullu mantık uygula: eğer token yoksa
   // login ekranını render edeceğiz (React Router v.6)
+  if(loginBusiness.checkLogin()){
+    useNavigate("/login")
+  }
 
   useEffect(() => {
     // ✨ yalnızca ilk render anında makaleleri buradan alın
-  })
+    getArticles()
+  },[])
 
+  const editButtonHandler = (evt)=> {
+    const articleId = evt.target.getAttribute("articleid")
+    setCurrentArticleId(articleId)
+  }
+  const deleteButtonHandler = (evt)=> {
+    const articleId = evt.target.getAttribute("articleid")
+    deleteArticle(articleId)
+  }
   return (
     // ✨ JSX i düzenleyi: `Function.prototype`'ı gerçek fonksiyonlarla güncelleyin
     // ve makale üretmek için articles propunu kullanın
     <div className="articles">
       <h2>Makaleler</h2>
       {
-        ![].length
+        !articles.length
           ? 'Hiç makale yok'
-          : [].map(art => {
+          : articles.map(art => {
             return (
               <div className="article" key={art.article_id}>
                 <div>
@@ -29,8 +42,8 @@ export default function Articles(props) {
                   <p>Başlık: {art.topic}</p>
                 </div>
                 <div>
-                  <button disabled={true} onClick={Function.prototype}>Düzenle</button>
-                  <button disabled={true} onClick={Function.prototype}>Sil</button>
+                  <button articleid = {art.article_id} onClick={editButtonHandler}>Düzenle</button>
+                  <button articleid = {art.article_id} onClick={deleteButtonHandler}>Sil</button>
                 </div>
               </div>
             )

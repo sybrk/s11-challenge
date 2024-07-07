@@ -8,6 +8,7 @@ const initialFormValues = {
 export default function LoginForm(props) {
   const [values, setValues] = useState(initialFormValues)
   // ✨ proplarım nerede? burada parçalayın
+  const {login} = props
 
   const onChange = evt => {
     const { id, value } = evt.target
@@ -17,6 +18,7 @@ export default function LoginForm(props) {
   const onSubmit = evt => {
     evt.preventDefault()
     // ✨ ekleyin
+    login(values)
   }
 
   const isDisabled = () => {
@@ -24,6 +26,10 @@ export default function LoginForm(props) {
     // Trimlenmiş username karakter sayısı >= 3, ve
     // trimlenmiş password karakter sayısı >= 8 
     // butonun enable durumuna geçmesi için
+    if (!(values.username.trim().length >= 3) || !(values.password.trim().length >= 8)){
+      return true
+    }
+    return false
   }
 
   return (

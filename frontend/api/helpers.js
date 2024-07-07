@@ -31,10 +31,10 @@ export const apiCalls = {
         const headers = {"Authorization": token}
         try {
             const response = await axios.get(`${apiUrl}/articles`, {headers});
-            return response.data;
+            return response;
         } catch (error) {
             console.error(error);
-            return error.response.data;
+            return error.response;
         }
     },
     postArticleRequest: async (token, title, text, topic) => {
@@ -44,10 +44,35 @@ export const apiCalls = {
         const data = {title, text, topic}
         try {
             const response = await axios.post(`${apiUrl}/articles`, data, {headers});
-            return response.data;
+            return response;
         } catch (error) {
             console.error(error);
-            return error.response.data;
+            return error.response;
+        }
+    },
+    updateArticleRequest: async (token, article_id, title, text, topic) => {
+        //....
+        //basit bir iş olmasaydı burada title ve text'in 1 karakterden uzun olmasını ve topic'in belirli konularda olmasını da kontrol etmeliydik.
+        const headers = {"Authorization": token}
+        const data = {title, text, topic}
+        try {
+            const response = await axios.put(`${apiUrl}/articles/${article_id}`, data, {headers});
+            return response;
+        } catch (error) {
+            console.error(error);
+            return error.response;
+        }
+    },
+    deleteArticleRequest: async (token, article_id) => {
+        //....
+        //basit bir iş olmasaydı burada title ve text'in 1 karakterden uzun olmasını ve topic'in belirli konularda olmasını da kontrol etmeliydik.
+        const headers = {"Authorization": token}
+        try {
+            const response = await axios.delete(`${apiUrl}/articles/${article_id}`, {headers});
+            return response;
+        } catch (error) {
+            console.error(error);
+            return error.response;
         }
     },
 };
