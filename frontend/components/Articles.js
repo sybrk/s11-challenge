@@ -35,15 +35,15 @@ export default function Articles(props) {
           ? 'Hiç makale yok'
           : articles.map(art => {
             return (
-              <div className="article" key={art.article_id}>
+              <div className="article" key={art.id}>
                 <div>
                   <h3>{art.title}</h3>
                   <p>{art.text}</p>
                   <p>Başlık: {art.topic}</p>
                 </div>
                 <div>
-                  <button articleid = {art.article_id} onClick={editButtonHandler}>Düzenle</button>
-                  <button articleid = {art.article_id} onClick={deleteButtonHandler}>Sil</button>
+                  <button articleid = {art.id} onClick={editButtonHandler}>Düzenle</button>
+                  <button articleid = {art.id} onClick={deleteButtonHandler}>Sil</button>
                 </div>
               </div>
             )
@@ -56,7 +56,7 @@ export default function Articles(props) {
 // 🔥 Dokunmayın: Makaleler aşağıdaki propları birebir istiyor:
 Articles.propTypes = {
   articles: PT.arrayOf(PT.shape({ // dizi boş olabilir
-    article_id: PT.number.isRequired,
+    id: PT.number.isRequired,
     title: PT.string.isRequired,
     text: PT.string.isRequired,
     topic: PT.string.isRequired,

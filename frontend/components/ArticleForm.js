@@ -104,7 +104,7 @@ ArticleForm.propTypes = {
   updateArticle: PT.func.isRequired,
   setCurrentArticleId: PT.func.isRequired,
   currentArticle: PT.shape({ // null ya da undefined olabilir,"oluşturma" modu manasında ("güncelle" nin zıttı olarak)
-    article_id: PT.number.isRequired,
+    id: PT.number.isRequired,
     title: PT.string.isRequired,
     text: PT.string.isRequired,
     topic: PT.string.isRequired,

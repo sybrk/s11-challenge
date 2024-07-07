@@ -7,6 +7,7 @@ import ArticleForm from './ArticleForm'
 import Spinner from './Spinner'
 import { loginBusiness } from '../businesssLayer/loginBusiness'
 import { articleBusiness } from '../businesssLayer/articleBusiness'
+import { supaHelpers } from '../api/supabase'
 
 
 const articlesUrl = 'http://localhost:9000/api/articles'
@@ -73,9 +74,12 @@ export default function App() {
     if (loginBusiness.checkLogin()) {
       setMessage("");
       setSpinnerOn(true)
-      let articleRequest = await articleBusiness.getArticles();
+      //let articleRequest = await articleBusiness.getArticles();
       setSpinnerOn(false);
-      if (articleRequest.status == 200) {
+      const supaArticles = await supaHelpers.getArticles();
+      setMessage("supa article geldi");
+      setArticles(supaArticles)
+      /* if (articleRequest.status == 200) {
         setMessage(articleRequest.data.message);
         setArticles(articleRequest.data.articles);
       } else {
@@ -84,7 +88,7 @@ export default function App() {
           loginBusiness.logout()
           navigate("/")
         }
-      }
+      } */
     } else {
       setMessage("Oturum açmanız gerekir")
       navigate("/")
@@ -98,16 +102,17 @@ export default function App() {
     // Akış, "getArticles" işlevine çok benzer.
     // Ne yapacağınızı biliyorsunuz, log kullanabilirsiniz ya da breakpointler
     setSpinnerOn(true);
-    const postRequest = await articleBusiness.postArticle(article);
+    //const postRequest = await articleBusiness.postArticle(article);
+    const supaPost = await supaHelpers.postArticle(article)
     setSpinnerOn(false)
-    if(postRequest.status == 201) {
-      
+    //if(postRequest.status == 201) {
+    if(supaPost.length) {
       await getArticles()
       
-      setMessage(postRequest.data.message)
+      setMessage("Eklendi")
       
     } else {
-      setMessage(postRequest.data.message)
+      setMessage("hata verdi")
     }
    
     
@@ -117,15 +122,16 @@ export default function App() {
     // ✨ ekleyin
     // Bunu biliyorsunuz!
     setSpinnerOn(true);
-    const updateArticleRequest = await articleBusiness.updateArticle(article_id, article);
+    //const updateArticleRequest = await articleBusiness.updateArticle(article_id, article);
+    const supaUpdate = await supaHelpers.updateArticle(article_id, article)
     setSpinnerOn(false);
-    if (updateArticleRequest.status == 200) {
+    if (supaUpdate.length) {
      
       await getArticles()
  
-      setMessage(updateArticleRequest.data.message)
+      setMessage("güncellendi")
     } else {
-      setMessage(updateArticleRequest.data.message)
+      setMessage("güncelleme hatası")
     }
     
     
@@ -133,13 +139,13 @@ export default function App() {
 
   const deleteArticle = async (article_id) => {
     // ✨ ekleyin
-    const deleteArticleRequest = await  articleBusiness.deleteArticle(article_id);
-  
-    if(deleteArticleRequest.status == 200) {
+    //const deleteArticleRequest = await  articleBusiness.deleteArticle(article_id);
+    const supaDelete = await supaHelpers.deleteArticle(article_id);
+    if(supaDelete) {
       await getArticles();
-      setMessage(deleteArticleRequest.data.message)
+      setMessage("silindi")
     } else {
-      setMessage(deleteArticleRequest.data.message)
+      setMessage("hata oldu")
     }
     
   }
@@ -164,7 +170,7 @@ export default function App() {
           <Route path="/" element={<LoginForm login={login} />} />
           <Route path="articles" element={
             <>
-              <ArticleForm postArticle={postArticle} updateArticle={updateArticle} setCurrentArticleId={setCurrentArticleId} currentArticle={articles.find(art => art.article_id == currentArticleId)} currentArticleId = {currentArticleId} />
+              <ArticleForm postArticle={postArticle} updateArticle={updateArticle} setCurrentArticleId={setCurrentArticleId} currentArticle={articles.find(art => art.id == currentArticleId)} currentArticleId = {currentArticleId} />
               <Articles getArticles={getArticles} articles={articles} deleteArticle={deleteArticle} setCurrentArticleId={setCurrentArticleId} />
             </>
           } />
