@@ -1,15 +1,14 @@
 import React, { useState } from 'react'
 import PT from 'prop-types'
-import { supabase } from '../api/supabase'
 
 const initialFormValues = {
   email: '',
   password: '',
 }
-export default function LoginForm(props) {
+export default function SignUpForm(props) {
   const [values, setValues] = useState(initialFormValues)
   // ✨ proplarım nerede? burada parçalayın
-  const {login} = props
+  const {signup} = props
 
   const onChange = evt => {
     const { id, value } = evt.target
@@ -19,7 +18,7 @@ export default function LoginForm(props) {
   const onSubmit = evt => {
     evt.preventDefault()
     // ✨ ekleyin
-    login(values)
+    signup(values)
   }
 
   const isDisabled = () => {
@@ -59,6 +58,6 @@ export default function LoginForm(props) {
 }
 
 // 🔥 Dokunmayın: LoginForm aşağıdaki propları birebir istiyor:
-LoginForm.propTypes = {
-  login: PT.func.isRequired,
+SignUpForm.propTypes = {
+  signup: PT.func.isRequired,
 }

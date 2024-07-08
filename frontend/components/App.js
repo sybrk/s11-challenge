@@ -7,7 +7,8 @@ import ArticleForm from './ArticleForm'
 import Spinner from './Spinner'
 import { loginBusiness } from '../businesssLayer/loginBusiness'
 import { articleBusiness } from '../businesssLayer/articleBusiness'
-import { supaHelpers } from '../api/supabase'
+import { supaHelpers, supabase } from '../api/supabase'
+import SignUpForm from './SignUpForm'
 
 
 const articlesUrl = 'http://localhost:9000/api/articles'
@@ -19,31 +20,47 @@ export default function App() {
   const [articles, setArticles] = useState([])
   const [currentArticleId, setCurrentArticleId] = useState()
   const [spinnerOn, setSpinnerOn] = useState(false)
+  const [session, setSession] = useState(null)
 
   // ✨ `useNavigate` 'i araştırın React Router v.6
   const navigate = useNavigate()
 
   useEffect(() => {
-    if (loginBusiness.checkLogin()) {
-      navigate("/articles");
-    } else {
-      navigate("/")
-    }
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      console.log("supa session", session)
+      setSession(session)
+    })
+
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, session) => {
+      setSession(session)
+    })
+
+    return () => subscription.unsubscribe()
   }, [])
 
-  const logout = () => {
+  const logout = async () => {
     // ✨ ekleyin
     // Eğer token local storage da kayıtlıysa silinmelidir,
     // ve state'ine "Güle güle!" mesajı eklenmelidir.
     // Herhangi bir case'de, tarayıcıyı login ekranına yönlendirin
-    const isLoggedOut = loginBusiness.logout();
-    if (isLoggedOut) {
+    const { error } = await supabase.auth.signOut()
+    if (!error) {
       setMessage("Güle güle!");
       navigate("/");
     }
   }
-
-  const login = async ({ username, password }) => {
+  const signUpNewUser = async ({ email, password }) => {
+    const { data, error } = await supabase.auth.signUp({
+      email: email,
+      password: password,
+      options: {
+        emailRedirectTo: 'http://localhost:3000',
+      },
+    })
+  }
+  const login = async ({ email, password }) => {
 
     // ✨ ekleyin
     // State'deki mesajı yok edin, spinner'ı açın
@@ -53,8 +70,11 @@ export default function App() {
     // ve makaleler sayfasına yönlendirin. Spinnerı kapatmayı unutmayın!
     setMessage("");
     setSpinnerOn(true);
-    let loginMessage = await loginBusiness.login(username, password);
-    setMessage(loginMessage);
+    const { data, error } = await supabase.auth.signInWithPassword({
+      email: email,
+      password: password,
+    })
+    setMessage(`Hello ${email}`);
     setSpinnerOn(false);
     if (loginBusiness.checkLogin()) {
       console.log("login token var")
@@ -71,11 +91,8 @@ export default function App() {
     // Eğer bir şeyler yanlış giderse, response'un durumunu inceleyin:
     // eğer 401'se token da bir sıkıntı olabilir ve tekrar login sayfasına yönlendirmeliyiz
     // Spinner'ı kapatmayı unutmayın!
-    if (loginBusiness.checkLogin()) {
-      setMessage("");
-      setSpinnerOn(true)
-      //let articleRequest = await articleBusiness.getArticles();
-      setSpinnerOn(false);
+    console.log("get articles session", session)
+    
       const supaArticles = await supaHelpers.getArticles();
       setMessage("supa article geldi");
       setArticles(supaArticles)
@@ -89,10 +106,7 @@ export default function App() {
           navigate("/")
         }
       } */
-    } else {
-      setMessage("Oturum açmanız gerekir")
-      navigate("/")
-    }
+  
 
 
   }
@@ -155,19 +169,20 @@ export default function App() {
     <>
       <Spinner on={spinnerOn} />
       <Message message={message} />
-      {loginBusiness.checkLogin() ? <><button id="logout" onClick={logout}>Oturumu kapat</button> </> : ""}
+      {session ? <><button id="logout" onClick={logout}>Oturumu kapat</button> </> : ""}
 
       <div id="wrapper" style={{ opacity: spinnerOn ? "0.25" : "1" }}> {/* <-- bu satırı değiştirmeyin */}
         <h1>İleri Seviye Web Uygulaması</h1>
         <nav>
-          {loginBusiness.checkLogin()
-          ? <NavLink id="articlesScreen" to="/articles">Makaleler</NavLink>
-          : <NavLink id="loginScreen" to="/">Oturum aç</NavLink>}
+          
+          <NavLink id="articlesScreen" to="/articles">Makaleler</NavLink>
+          <NavLink id="loginScreen" to="/">Oturum aç</NavLink>
 
           
         </nav>
         <Routes>
           <Route path="/" element={<LoginForm login={login} />} />
+          <Route path="/signup" element={<SignUpForm signup={signUpNewUser} />} />
           <Route path="articles" element={
             <>
               <ArticleForm postArticle={postArticle} updateArticle={updateArticle} setCurrentArticleId={setCurrentArticleId} currentArticle={articles.find(art => art.id == currentArticleId)} currentArticleId = {currentArticleId} />

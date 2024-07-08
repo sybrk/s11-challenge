@@ -8,9 +8,6 @@ export default function Articles(props) {
   const {getArticles, articles, deleteArticle, setCurrentArticleId} = props
   // ✨ koşullu mantık uygula: eğer token yoksa
   // login ekranını render edeceğiz (React Router v.6)
-  if(loginBusiness.checkLogin()){
-    useNavigate("/login")
-  }
 
   useEffect(() => {
     // ✨ yalnızca ilk render anında makaleleri buradan alın
