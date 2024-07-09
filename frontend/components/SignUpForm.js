@@ -33,8 +33,8 @@ export default function SignUpForm(props) {
   }
 
   return (
-    <form id="loginForm" onSubmit={onSubmit}>
-      <h2>Login</h2>
+    <form id="signUpForm" onSubmit={onSubmit}>
+      <h2>Sign Up</h2>
       <input
         maxLength={20}
         value={values.username}
@@ -52,7 +52,7 @@ export default function SignUpForm(props) {
         id="password"
         type='password'
       />
-      <button disabled={isDisabled()} id="submitCredentials">Oturum aç</button>
+      <button disabled={isDisabled()} id="submitCredentials">Kaydol</button>
     </form>
   )
 }

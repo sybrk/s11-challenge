@@ -8,10 +8,16 @@ export default function Articles(props) {
   const {getArticles, articles, deleteArticle, setCurrentArticleId} = props
   // ✨ koşullu mantık uygula: eğer token yoksa
   // login ekranını render edeceğiz (React Router v.6)
+  const navigate = useNavigate()
 
   useEffect(() => {
     // ✨ yalnızca ilk render anında makaleleri buradan alın
-    getArticles()
+    if(loginBusiness.checkLogin()) {
+      getArticles()
+    } else {
+      navigate("/")
+    }
+    
   },[])
 
   const editButtonHandler = (evt)=> {
@@ -39,8 +45,13 @@ export default function Articles(props) {
                   <p>Başlık: {art.topic}</p>
                 </div>
                 <div>
-                  <button articleid = {art.id} onClick={editButtonHandler}>Düzenle</button>
-                  <button articleid = {art.id} onClick={deleteButtonHandler}>Sil</button>
+                  
+                    
+                    <button articleid = {art.id} onClick={editButtonHandler}>Düzenle</button>
+                    <button articleid = {art.id} onClick={deleteButtonHandler}>Sil</button>
+                    
+                  
+                  
                 </div>
               </div>
             )

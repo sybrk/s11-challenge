@@ -5,7 +5,6 @@ export const supabase = createClient("https://vwbgnvhwehuoxlycqtya.supabase.co",
 export const supaHelpers = {
     getArticles: async () => {
         const { data } = await supabase.from("articles").select()
-        console.log("helper supa", data)
         return data
     },
     postArticle: async ({title, text, topic}) => {
@@ -17,16 +16,16 @@ export const supaHelpers = {
     },
     updateArticle: async (id, article) => {
         const {title, text, topic} = article
-        const { data, error } = await supabase.from("articles").update([{title, text, topic}]).eq("id", id).select()
-        if (data) {
-            return data
-        }
-        return error
+        const response = await supabase.from("articles").update([{title, text, topic}]).eq("id", id).select()
+        console.log(response)
+       
+        return response
     },
     deleteArticle: async (id) => {
-        const {error } = await supabase.from("articles").delete().eq("id", id)
-        if (error) {
-            return error
+        const response = await supabase.from("articles").delete().eq("id", id)
+        console.log(response)
+        if (response) {
+            return response
         } else {
             return true
         }

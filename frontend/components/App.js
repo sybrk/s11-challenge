@@ -29,6 +29,11 @@ export default function App() {
     supabase.auth.getSession().then(({ data: { session } }) => {
       console.log("supa session", session)
       setSession(session)
+      if (!session) {
+        navigate("/")
+      } else {
+        navigate("/articles")
+      }
     })
 
     const {
@@ -76,10 +81,7 @@ export default function App() {
     })
     setMessage(`Hello ${email}`);
     setSpinnerOn(false);
-    if (loginBusiness.checkLogin()) {
-      console.log("login token var")
-      navigate("/articles")
-    }
+    navigate("/articles")
   }
 
   const getArticles = async () => {
@@ -138,14 +140,15 @@ export default function App() {
     setSpinnerOn(true);
     //const updateArticleRequest = await articleBusiness.updateArticle(article_id, article);
     const supaUpdate = await supaHelpers.updateArticle(article_id, article)
+    console.log("supaupdate", supaUpdate)
     setSpinnerOn(false);
-    if (supaUpdate.length) {
+    if (supaUpdate?.status == 200) {
      
       await getArticles()
  
       setMessage("güncellendi")
     } else {
-      setMessage("güncelleme hatası")
+      setMessage(`güncelleme hatası`)
     }
     
     
@@ -169,14 +172,24 @@ export default function App() {
     <>
       <Spinner on={spinnerOn} />
       <Message message={message} />
-      {session ? <><button id="logout" onClick={logout}>Oturumu kapat</button> </> : ""}
+      {loginBusiness.checkLogin() ? <><p>{session?.user.email}</p><button id="logout" onClick={logout}>Oturumu kapat</button> </> : ""}
 
       <div id="wrapper" style={{ opacity: spinnerOn ? "0.25" : "1" }}> {/* <-- bu satırı değiştirmeyin */}
         <h1>İleri Seviye Web Uygulaması</h1>
         <nav>
+          {
+            loginBusiness.checkLogin() ? 
+            <>
+            <NavLink id="articlesScreen" to="/articles">Makaleler</NavLink>
+            </>
+            :
+            <>
+              <NavLink id="loginScreen" to="/">Oturum aç</NavLink>
+              <NavLink id="signUpScreen" to="/signup">Kaydol</NavLink>
+            </>
+          }
           
-          <NavLink id="articlesScreen" to="/articles">Makaleler</NavLink>
-          <NavLink id="loginScreen" to="/">Oturum aç</NavLink>
+          
 
           
         </nav>
@@ -185,7 +198,7 @@ export default function App() {
           <Route path="/signup" element={<SignUpForm signup={signUpNewUser} />} />
           <Route path="articles" element={
             <>
-              <ArticleForm postArticle={postArticle} updateArticle={updateArticle} setCurrentArticleId={setCurrentArticleId} currentArticle={articles.find(art => art.id == currentArticleId)} currentArticleId = {currentArticleId} />
+              <ArticleForm postArticle={postArticle} updateArticle={updateArticle} setCurrentArticleId={setCurrentArticleId} currentArticle={articles.find(art => art.id == currentArticleId)} currentArticleId = {currentArticleId}/>
               <Articles getArticles={getArticles} articles={articles} deleteArticle={deleteArticle} setCurrentArticleId={setCurrentArticleId} />
             </>
           } />
